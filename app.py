@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 # Environment variables
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 HF_TOKEN = os.getenv('HF_TOKEN')
-HF_API_URL = "https://api-inference.huggingface.co/models/levihsu/BiRefNet"
+HF_API_URL = "https://api-inference.huggingface.co/models/ZhengPeng7/BiRefNet"
 
 # Flask app for keeping the server alive (for Render deployment)
 app = Flask(__name__)
