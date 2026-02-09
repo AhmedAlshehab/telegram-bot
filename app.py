@@ -29,11 +29,13 @@ model = AutoModelForImageSegmentation.from_pretrained("ZhengPeng7/BiRefNet", tru
 model.to(device)
 model.eval()
 
+# تأكد أن هذا الجزء في كودك يشبه هذا تماماً
 transform_image = transforms.Compose([
     transforms.Resize((1024, 1024)),
     transforms.ToTensor(),
     transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-])
+]) # هذا هو القوس الذي كان يسبب المشكلة، تأكد من وجوده مرة واحدة فقط
+
 
 async def process_and_remove_bg(update: Update, context: ContextTypes.DEFAULT_TYPE):
     status_msg = await update.message.reply_text("⏳ جاري تنقية الصورة...")
