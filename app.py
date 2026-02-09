@@ -29,25 +29,36 @@ def query_hugging_face(image_bytes):
     return response.content
 
 async def process_and_remove_bg(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    status_msg = await update.message.reply_text("⏳ جاري المعالجة في مختبر الهجين...")
+    status_msg = await update.message.reply_text("⏳ جاري المعالجة بدقة عالية...")
     try:
-        # تحميل الصورة من تليجرام
+        # 1. تحميل الصورة من تليجرام
         photo_file = await update.message.photo[-1].get_file()
         photo_bytes = await photo_file.download_as_bytearray()
         
-        # إرسال الصورة لهجين وقص الخلفية هناك
+        # 2. إرسالها لـ Hugging Face
         processed_image_bytes = query_hugging_face(photo_bytes)
         
-        # إرسال النتيجة للمستخدم
-        out_io = io.BytesIO(processed_image_bytes)
-        out_io.name = "no_bg.png"
-        await update.message.reply_document(document=out_io, caption="✨ تمت المعالجة بواسطة Hugging Face!")
+        # 3. التأكد من سلامة الملف الناتج (إعادة تهيئة البايتات كصورة PNG سليمة)
+        image = Image.open(io.BytesIO(processed_image_bytes)).convert("RGBA")
+        
+        out_io = io.BytesIO()
+        # حفظ الصورة بصيغة PNG مع التأكد من حفظ قناة الشفافية (Alpha)
+        image.save(out_io, format="PNG", optimize=True)
+        out_io.seek(0)
+        
+        # 4. إرسال الملف مع تحديد الاسم والنوع لضمان عدم حدوث عطل عند الفتح
+        await update.message.reply_document(
+            document=out_io, 
+            filename="transparent_result.png",
+            caption="✨ تفضل الصورة شفافة وجاهزة للاستخدام!"
+        )
         
     except Exception as e:
         print(f"Error: {e}")
-        await update.message.reply_text("❌ حدث تأخير في الاستجابة، حاول مرة أخرى.")
+        await update.message.reply_text("❌ حدث خطأ في معالجة الملف، حاول مرة أخرى.")
     finally:
         await status_msg.delete()
+
 
 if __name__ == '__main__':
     BOT_TOKEN = os.getenv("BOT_TOKEN")
