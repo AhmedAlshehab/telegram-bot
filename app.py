@@ -1,10 +1,14 @@
 import os
 import io
 import requests
+from PIL import Image  # هذا السطر هو الذي سيحل مشكلة "العطل"
 from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, filters, ContextTypes
 from flask import Flask
 from threading import Thread
+
+# ... باقي الكود الذي أعطيتك إياه سابقاً ...
+
 
 # 1. إعداد سيرفر الويب الصغير لـ Render
 app_web = Flask('')
