@@ -197,12 +197,9 @@ def main():
     logger.info("Bot is starting...")
     
     # Configure polling with timeouts and drop pending updates
+        # الكود الصحيح والمختصر
     application.run_polling(
         allowed_updates=Update.ALL_TYPES,
-        read_timeout=60,
-        write_timeout=60,
-        connect_timeout=60,
-        pool_timeout=60,
         drop_pending_updates=True
     )
 
