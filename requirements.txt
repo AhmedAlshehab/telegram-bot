@@ -1,0 +1,8 @@
+python-telegram-bot
+torch
+torchvision
+transformers
+kornia
+pillow
+nest_asyncio
+accelerate
