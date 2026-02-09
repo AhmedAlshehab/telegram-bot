@@ -1,28 +1,22 @@
-# استخدام نسخة بايثون رسمية وخفيفة
-# سنستخدم نسخة كاملة بدلاً من slim لتجنب التحميل من الخارج
-FROM python:3.10
+FROM python:3.10-slim
 
-# منع بايثون من إنشاء ملفات pyc
+# منع بايثون من إنشاء ملفات مؤقتة وتأمين خروج الطباعة مباشرة للـ Logs
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
-# لن نحتاج لـ apt-get update هنا لأن النسخة الكاملة تحتوي على المكتبات غالباً
-# سنكتفي بتثبيت مكتبات بايثون مباشرة
+# تحديث أسماء المكتبات لتناسب نسخة Debian الحديثة (Trixie)
+RUN apt-get update --fix-missing && apt-get install -y \
+    libgl1 \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# تثبيت المكتبات البرمجية
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
-
-CMD ["python", "app.py"]
-
-
-# تثبيت مكتبات بايثون
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# نسخ الكود بالكامل
+# نسخ ملفات المشروع
 COPY . .
 
 # أمر التشغيل
